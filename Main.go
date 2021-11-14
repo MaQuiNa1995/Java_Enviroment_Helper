@@ -16,14 +16,14 @@ func main() {
 
 	fmt.Println()
 	log.Println("Comprobando variables de entorno...")
-	envKeys := [...]string{"JAVA_HOME", "JDK_HOME", "JRE_HOME", "MAVEN_HOME"}
+	envKeys := [...]string{"JAVA_HOME", "MAVEN_HOME", "JRE_HOME"}
 	for _, key := range envKeys {
 		checkEnvVar(key)
 	}
 	fmt.Println()
 
 	log.Println("Comprobando la variable PATH")
-	pathEnvKeys := [...]string{"JAVA_HOME", "JDK_HOME", "MAVEN_HOME"}
+	pathEnvKeys := envKeys[:len(envKeys)-1]
 	for _, key := range pathEnvKeys {
 		checkEnvPath(key)
 	}
@@ -46,12 +46,12 @@ func main() {
 		wg.Done()
 	}
 	wg.Wait()
-	log.Print("Acabado")
+	log.Print("Proceso terminado")
 }
 
 func checkEnvPath(value string) {
 
-	fullVar := os.Getenv(value) + "\\bin"
+	fullVar := os.Getenv(value) + string(os.PathSeparator) + "bin"
 
 	if val, _ := os.LookupEnv("PATH"); strings.Contains(val, fullVar) {
 		log.Println("El PATH contiene:", value)

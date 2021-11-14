@@ -43,10 +43,14 @@ func main() {
 
 	for program, url := range programs {
 		go downloadFile(program, url, &wg)
-		wg.Done()
+
 	}
 	wg.Wait()
-	log.Print("Proceso terminado")
+
+	fmt.Println()
+	log.Print("Proceso terminado, aprieta enter para salir...")
+	fmt.Scanln()
+
 }
 
 func checkEnvPath(value string) {
@@ -62,22 +66,22 @@ func checkEnvPath(value string) {
 
 func createFolder(url string) {
 	fmt.Println()
-	log.Println("Creating a folder with url:", url)
+	log.Println("Creando carpeta: ", url)
 	os.Mkdir(url, 0777)
 	fmt.Println()
 }
 
 func checkEnvVar(key string) {
 	if val, exists := os.LookupEnv(key); exists {
-		log.Printf("Variable de entorno: %v  está seteada con valor: %v", key, val)
+		log.Printf("%v está seteada con valor: %v", key, val)
 	} else {
-		log.Printf("Variable de entorno: %v no encontrada \n", key)
+		log.Printf("%v no encontrada \n", key)
 	}
 }
 
 func downloadFile(program string, url string, wg *sync.WaitGroup) {
 	log.Println("Se empieza a descargar:", program)
-
+	defer wg.Done()
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -98,4 +102,5 @@ func downloadFile(program string, url string, wg *sync.WaitGroup) {
 	if err == nil {
 		log.Println("Se ha descargado:", program)
 	}
+
 }

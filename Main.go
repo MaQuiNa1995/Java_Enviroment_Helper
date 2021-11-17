@@ -10,8 +10,6 @@ import (
 	"sync"
 )
 
-const downloadFolder = "downloads"
-
 func main() {
 
 	fmt.Println()
@@ -27,7 +25,7 @@ func main() {
 	for _, key := range pathEnvKeys {
 		checkEnvPath(key)
 	}
-	createFolder(downloadFolder)
+	destinationFolder := createDestinationFolder()
 
 	programs := map[string]string{
 		"eclipse": "https://rhlx01.hs-esslingen.de/pub/Mirrors/eclipse/technology/epp/downloads/release/2021-09/R/eclipse-jee-2021-09-R-win32-x86_64.zip",
@@ -42,7 +40,7 @@ func main() {
 	wg.Add(len(programs))
 
 	for program, url := range programs {
-		go downloadFile(program, url, &wg)
+		go downloadFile(program, url, &wg, destinationFolder)
 
 	}
 	wg.Wait()
@@ -64,11 +62,16 @@ func checkEnvPath(value string) {
 	}
 }
 
-func createFolder(url string) {
+func createDestinationFolder() string {
+
+	folder := os.Getenv("USERPROFILE") + string(os.PathSeparator) + "downloads"
+
 	fmt.Println()
-	log.Println("Creando carpeta: ", url)
-	os.Mkdir(url, 0777)
+	log.Println("Creando carpeta: ", folder)
+	os.Mkdir(folder, 0777)
 	fmt.Println()
+
+	return folder + string(os.PathSeparator)
 }
 
 func checkEnvVar(key string) {
@@ -79,7 +82,7 @@ func checkEnvVar(key string) {
 	}
 }
 
-func downloadFile(program string, url string, wg *sync.WaitGroup) {
+func downloadFile(program string, url string, wg *sync.WaitGroup, destinationFolder string) {
 	log.Println("Se empieza a descargar:", program)
 	defer wg.Done()
 	resp, err := http.Get(url)
@@ -91,7 +94,7 @@ func downloadFile(program string, url string, wg *sync.WaitGroup) {
 	splittedUrl := strings.Split(url, "/")
 	programNameIndex := len(splittedUrl) - 1
 
-	out, err := os.Create("." + string(os.PathSeparator) + downloadFolder + string(os.PathSeparator) + splittedUrl[programNameIndex])
+	out, err := os.Create(destinationFolder + splittedUrl[programNameIndex])
 	if err != nil {
 		log.Fatal(err)
 	}

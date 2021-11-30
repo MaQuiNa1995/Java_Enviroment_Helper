@@ -9,6 +9,8 @@ import (
 	"os"
 	"strings"
 	"sync"
+
+	_ "github.com/dimiro1/banner/autoload"
 )
 
 func main() {
@@ -80,9 +82,9 @@ func createDestinationFolder() string {
 	if os.IsNotExist(err) {
 		log.Println("Creando carpeta:", folder)
 		os.Mkdir(folder, 0777)
-	} else {
-		log.Println("La carpeta de descargas encontrada:", folder)
 	}
+	log.Println("Aqui se descargarán los programas:", folder)
+
 	fmt.Println()
 
 	return folder + string(os.PathSeparator)

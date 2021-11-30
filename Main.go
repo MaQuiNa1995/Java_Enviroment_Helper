@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -11,6 +12,32 @@ import (
 )
 
 func main() {
+
+	destinationFolder := createDestinationFolder()
+
+	programs := map[string]string{
+		"Eclipse":   "https://rhlx01.hs-esslingen.de/pub/Mirrors/eclipse/technology/epp/downloads/release/2021-09/R/eclipse-jee-2021-09-R-win32-x86_64.zip",
+		"Git":       "https://github.com/git-for-windows/git/releases/download/v2.34.1.windows.1/Git-2.34.1-64-bit.exe",
+		"Maven":     "https://dlcdn.apache.org/maven/maven-3/3.8.3/binaries/apache-maven-3.8.3-bin.zip",
+		"OpenJdk11": "https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_windows-x64_bin.zip",
+		"Lombok":    "https://projectlombok.org/downloads/lombok.jar",
+		"Notepad":   "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.1.9.1/npp.8.1.9.1.Installer.x64.exe",
+		"ConEmu":    "https://download.fosshub.com/Protected/expiretime=1636888904;badurl=aHR0cHM6Ly93d3cuZm9zc2h1Yi5jb20vQ29uRW11Lmh0bWw=/7253d451ada51c2054be0702c1fe244f0b786c220ae58926a07cc3198d933f41/5b85860af9ee5a5c3e979f45/613e772663102e500262817b/ConEmuSetup.210912.exe",
+	}
+
+	var wg sync.WaitGroup
+
+	total := len(programs)
+
+	wg.Add(total)
+
+	count := 0
+
+	for program, url := range programs {
+		go downloadFile(program, url, &wg, destinationFolder, &count, &total)
+	}
+
+	wg.Wait()
 
 	fmt.Println()
 	log.Println("Comprobando variables de entorno...")
@@ -25,25 +52,6 @@ func main() {
 	for _, key := range pathEnvKeys {
 		checkEnvPath(key)
 	}
-	destinationFolder := createDestinationFolder()
-
-	programs := map[string]string{
-		"eclipse": "https://rhlx01.hs-esslingen.de/pub/Mirrors/eclipse/technology/epp/downloads/release/2021-09/R/eclipse-jee-2021-09-R-win32-x86_64.zip",
-		"maven":   "https://dlcdn.apache.org/maven/maven-3/3.8.3/binaries/apache-maven-3.8.3-bin.zip",
-		"openJdk": "https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_windows-x64_bin.zip",
-		"lombok":  "https://projectlombok.org/downloads/lombok.jar",
-		"notepad": "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.1.9.1/npp.8.1.9.1.Installer.x64.exe",
-		"conEmu":  "https://download.fosshub.com/Protected/expiretime=1636888904;badurl=aHR0cHM6Ly93d3cuZm9zc2h1Yi5jb20vQ29uRW11Lmh0bWw=/7253d451ada51c2054be0702c1fe244f0b786c220ae58926a07cc3198d933f41/5b85860af9ee5a5c3e979f45/613e772663102e500262817b/ConEmuSetup.210912.exe",
-	}
-
-	var wg sync.WaitGroup
-	wg.Add(len(programs))
-
-	for program, url := range programs {
-		go downloadFile(program, url, &wg, destinationFolder)
-
-	}
-	wg.Wait()
 
 	fmt.Println()
 	log.Print("Proceso terminado, aprieta enter para salir...")
@@ -66,9 +74,15 @@ func createDestinationFolder() string {
 
 	folder := os.Getenv("USERPROFILE") + string(os.PathSeparator) + "downloads"
 
+	_, err := os.Stat(folder)
+
 	fmt.Println()
-	log.Println("Creando carpeta: ", folder)
-	os.Mkdir(folder, 0777)
+	if os.IsNotExist(err) {
+		log.Println("Creando carpeta:", folder)
+		os.Mkdir(folder, 0777)
+	} else {
+		log.Println("La carpeta de descargas encontrada:", folder)
+	}
 	fmt.Println()
 
 	return folder + string(os.PathSeparator)
@@ -82,19 +96,29 @@ func checkEnvVar(key string) {
 	}
 }
 
-func downloadFile(program string, url string, wg *sync.WaitGroup, destinationFolder string) {
-	log.Println("Se empieza a descargar:", program)
+func downloadFile(program string, url string, wg *sync.WaitGroup, destinationFolder string, progress *int, total *int) {
+
+	log.Printf("Descargando: %v...", program)
 	defer wg.Done()
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer resp.Body.Close()
 
 	splittedUrl := strings.Split(url, "/")
 	programNameIndex := len(splittedUrl) - 1
 
-	out, err := os.Create(destinationFolder + splittedUrl[programNameIndex])
+	programLocalUrl := destinationFolder + splittedUrl[programNameIndex]
+
+	if exists(programLocalUrl) {
+		*progress++
+		log.Printf("[%v/%v] %v ya está descargado en la ruta %v", *progress, *total, program, programLocalUrl)
+		return
+	}
+
+	out, err := os.Create(programLocalUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,7 +127,19 @@ func downloadFile(program string, url string, wg *sync.WaitGroup, destinationFol
 	_, err = io.Copy(out, resp.Body)
 
 	if err == nil {
-		log.Println("Se ha descargado:", program)
+		*progress++
+		log.Printf("[%v/%v] Se ha descargado: %v en: %v", *progress, *total, program, programLocalUrl)
 	}
 
+}
+
+func exists(name string) bool {
+	_, err := os.Stat(name)
+	if err == nil {
+		return true
+	}
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	return false
 }

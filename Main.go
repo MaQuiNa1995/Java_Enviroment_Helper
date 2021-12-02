@@ -116,7 +116,7 @@ func downloadFile(program string, url string, wg *sync.WaitGroup, destinationFol
 
 	if exists(programLocalUrl) {
 		*progress++
-		log.Printf("[%v/%v] %v ya está descargado en la ruta %v", *progress, *total, program, programLocalUrl)
+		log.Printf("[%v/%v] %v ya estaba descargado en la ruta: %v", *progress, *total, program, programLocalUrl)
 		return
 	}
 
@@ -130,7 +130,7 @@ func downloadFile(program string, url string, wg *sync.WaitGroup, destinationFol
 
 	if err == nil {
 		*progress++
-		log.Printf("[%v/%v] Se ha descargado: %v en: %v", *progress, *total, program, programLocalUrl)
+		log.Printf("[%v/%v] Se ha descargado %v en: %v", *progress, *total, program, programLocalUrl)
 	}
 
 }

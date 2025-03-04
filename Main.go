@@ -20,7 +20,7 @@ func main() {
 		"Putty":     "https://the.earth.li/~sgtatham/putty/latest/w64/putty-64bit-0.83-installer.msi",
 		"Curl":      "https://curl.se/download/curl-8.12.1.zip",
 		"Firefox":   "https://www.mozilla.org/firefox/download/thanks/",
-		"Discord":   "https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x64",
+		"Discord":   "https://stable.dl2.discordapp.net/distro/app/stable/win/x64/1.0.9184/DiscordSetup.exe",
 		"Spotify":   "https://download.scdn.co/SpotifySetup.exe",
 		"Git":       "https://github.com/git-for-windows/git/releases/download/v2.48.1.windows.1/Git-2.48.1-64-bit.exe",
 		"Maven":     "https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.zip",

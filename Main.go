@@ -16,7 +16,7 @@ import (
 func main() {
 
 	programs := map[string]string{
-		"Eclipse":   "https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2024-12/R/eclipse-inst-jre-win64.exe&mirror_id=1319",
+		"Eclipse":   "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2024-12/R/eclipse-jee-2024-12-R-win32-x86_64.zip&mirror_id=1319",
 		"Putty":     "https://the.earth.li/~sgtatham/putty/latest/w64/putty-64bit-0.83-installer.msi",
 		"Curl":      "https://curl.se/download/curl-8.12.1.zip",
 		"Firefox":   "https://www.mozilla.org/firefox/download/thanks/",

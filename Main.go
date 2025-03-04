@@ -16,18 +16,18 @@ import (
 func main() {
 
 	programs := map[string]string{
-		"Eclipse":   "https://rhlx01.hs-esslingen.de/pub/Mirrors/eclipse/technology/epp/downloads/release/2021-09/R/eclipse-jee-2021-09-R-win32-x86_64.zip",
-		"Putty":     "https://the.earth.li/~sgtatham/putty/latest/w64/putty-64bit-0.76-installer.msi",
-		"Curl":      "https://curl.se/windows/dl-7.80.0/curl-7.80.0-win64-mingw.zip",
-		"Firefox":   "https://cdn.stubdownloader.services.mozilla.com/builds/firefox-stub/es-ES/win/427cd0350882d8f19b59cd1d91eda765fc956b44a6d30b8bf357cdbc2718708b/Firefox%20Installer.exe",
-		"Discord":   "https://dl.discordapp.net/distro/app/stable/win/x86/1.0.9003/DiscordSetup.exe",
+		"Eclipse":   "https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2024-12/R/eclipse-inst-jre-win64.exe&mirror_id=1319",
+		"Putty":     "https://the.earth.li/~sgtatham/putty/latest/w64/putty-64bit-0.83-installer.msi",
+		"Curl":      "https://curl.se/download/curl-8.12.1.zip",
+		"Firefox":   "https://www.mozilla.org/firefox/download/thanks/",
+		"Discord":   "https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x64",
 		"Spotify":   "https://download.scdn.co/SpotifySetup.exe",
-		"Git":       "https://github.com/git-for-windows/git/releases/download/v2.34.1.windows.1/Git-2.34.1-64-bit.exe",
-		"Maven":     "https://dlcdn.apache.org/maven/maven-3/3.8.3/binaries/apache-maven-3.8.3-bin.zip",
-		"OpenJdk11": "https://download.java.net/java/GA/jdk11/13/GPL/openjdk-11.0.1_windows-x64_bin.zip",
+		"Git":       "https://github.com/git-for-windows/git/releases/download/v2.48.1.windows.1/Git-2.48.1-64-bit.exe",
+		"Maven":     "https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.zip",
+		"OpenJdk23": "https://download.oracle.com/java/23/archive/jdk-23.0.1_windows-x64_bin.zip",
 		"Lombok":    "https://projectlombok.org/downloads/lombok.jar",
 		"Notepad":   "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.1.9.1/npp.8.1.9.1.Installer.x64.exe",
-		"ConEmu":    "https://download.fosshub.com/Protected/expiretime=1636888904;badurl=aHR0cHM6Ly93d3cuZm9zc2h1Yi5jb20vQ29uRW11Lmh0bWw=/7253d451ada51c2054be0702c1fe244f0b786c220ae58926a07cc3198d933f41/5b85860af9ee5a5c3e979f45/613e772663102e500262817b/ConEmuSetup.210912.exe",
+		"ConEmu":    "https://github.com/Maximus5/ConEmu/releases/download/v23.07.24/ConEmuSetup.230724.exe",
 	}
 
 	destinationFolder := createDestinationFolder()
